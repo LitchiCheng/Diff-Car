@@ -258,11 +258,11 @@ static rt_err_t drv_pwm_set(TIM_HandleTypeDef *htim, struct rt_pwm_configuration
     tim_clock /= 1000000UL;
     period = (unsigned long long)configuration->period * tim_clock / 1000ULL ;
     rt_uint64_t true_perio = configuration->period;
-    LOG_I("time clock %d", tim_clock);
-    LOG_I("time true_perio %d", true_perio);
-    LOG_I("time period %d", period);
+//    LOG_I("time clock %d", tim_clock);
+//    LOG_I("time true_perio %d", true_perio);
+//    LOG_I("time period %d", period);
     psc = period / MAX_PERIOD + 1;
-    LOG_I("time psc %d ", psc);
+//    LOG_I("time psc %d ", psc);
     period = period / psc;
 
     __HAL_TIM_SET_PRESCALER(htim, psc - 1);
@@ -272,7 +272,7 @@ static rt_err_t drv_pwm_set(TIM_HandleTypeDef *htim, struct rt_pwm_configuration
         period = MIN_PERIOD;
     }
     __HAL_TIM_SET_AUTORELOAD(htim, period - 1);
-    LOG_I("time period %d ", period);
+//    LOG_I("time period %d ", period);
     pulse = (unsigned long long)configuration->pulse * tim_clock / psc / 1000ULL;
     if (pulse < MIN_PULSE)
     {

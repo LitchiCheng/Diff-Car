@@ -161,8 +161,8 @@ extern "C"
  *
  */
 
-#define BSP_USING_PWM1
-#define BSP_USING_PWM1_CH1
+//#define BSP_USING_PWM1
+//#define BSP_USING_PWM1_CH1
 /*#define BSP_USING_PWM2*/
 #define BSP_USING_PWM3
 #define BSP_USING_PWM3_CH1
@@ -230,7 +230,7 @@ extern "C"
 /*#define BSP_USING_TIM*/
 #ifdef BSP_USING_TIM
 #define BSP_USING_TIM3
-#define BSP_USING_TIM1
+#define BSP_USING_TIM4
 /*#define BSP_USING_TIM17*/
 #endif
 
