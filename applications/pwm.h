@@ -21,6 +21,7 @@ class Pwm
 public:
     Pwm(){}
     Pwm(const char* name){
+        memset(_pwm_dev_name, 0x00, 6);
         setPwmName(name);
         init();
     }
@@ -34,7 +35,7 @@ public:
         _pwm_dev = (struct rt_device_pwm *)rt_device_find(_pwm_dev_name);
         if (_pwm_dev == RT_NULL)
         {
-            rt_kprintf("pwm sample run failed! can't find %s device!\n", _pwm_dev_name);
+            rt_kprintf("pwm run failed! can't find %s  device!\n", _pwm_dev_name);
             return;
         }
         rt_pwm_enable(_pwm_dev, 0);
