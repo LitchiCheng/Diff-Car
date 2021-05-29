@@ -71,7 +71,7 @@ static void MX_TIM1_Init(void);
   * @brief  The application entry point.
   * @retval int
   */
-__WEAK __WEAK int main(void)
+__WEAK __WEAK __WEAK __WEAK __WEAK int main(void)
 {
   /* USER CODE BEGIN 1 */
 

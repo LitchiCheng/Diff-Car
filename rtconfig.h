@@ -94,6 +94,7 @@
 #define RT_SERIAL_RB_BUFSZ 64
 #define RT_USING_HWTIMER
 #define RT_USING_PIN
+#define RT_USING_PWM
 #define RT_USING_PULSE_ENCODER
 
 /* Using USB */
@@ -139,8 +140,8 @@
 
 /* log format */
 
+#define ULOG_OUTPUT_FLOAT
 #define ULOG_USING_COLOR
-#define ULOG_OUTPUT_TIME
 #define ULOG_OUTPUT_LEVEL
 #define ULOG_OUTPUT_TAG
 /* end of log format */
@@ -197,19 +198,16 @@
 
 /* system packages */
 
-/* acceleration: Assembly language or algorithmic acceleration packages */
-
-/* end of acceleration: Assembly language or algorithmic acceleration packages */
-
-/* Micrium: Micrium software products porting for RT-Thread */
-
-/* end of Micrium: Micrium software products porting for RT-Thread */
 #define PKG_USING_FAL
 #define FAL_DEBUG_CONFIG
 #define FAL_DEBUG 1
 #define FAL_PART_HAS_TABLE_CFG
 #define PKG_USING_FAL_V00500
 #define PKG_FAL_VER_NUM 0x00500
+
+/* Micrium: Micrium software products porting for RT-Thread */
+
+/* end of Micrium: Micrium software products porting for RT-Thread */
 /* end of system packages */
 
 /* peripheral libraries and drivers */
