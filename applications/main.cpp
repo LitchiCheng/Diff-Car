@@ -24,21 +24,25 @@
 
 #include "pwm.h"
 #include "drv_encoder.h"
+#include "slide_window.h"
 
 void speedThread(void* parameter)
 {
     rt_int16_t count2;
     bool first_in = true;
+    SlideWindow<rt_int16_t, 50> filter;
     while (1)
     {
         rt_int16_t tmp;
         getCounter(&tmp);
+        rt_kprintf("%d \r\n", tmp);
         if(first_in){
             first_in = false;
             count2 = tmp;
         }
         rt_int16_t cnt_per_s = (tmp - count2) * 1000 / 10;
-        rt_kprintf("%d\r\n", cnt_per_s*1000);
+        filter.push(cnt_per_s);
+        //rt_kprintf("%d\r\n", filter.getFilterValue());
         count2 = tmp;
         rt_thread_mdelay(10);
     }
@@ -61,14 +65,14 @@ int main(void)
 
     Pwm test("pwm4");
     Pwm test1("pwm3");
-    int count = 1;
+    int count = 30000;
+    test.set(1, 100000, count);
+    test.set(2, 100000, 100000-count);
+    test1.set(1, 100000, count);
+    test1.set(2, 100000, 100000-count);
     while (true)
     {
-        count = 30000;
-        test.set(1, 100000, count);
-        test.set(2, 100000, 100000-count);
-        test1.set(1, 100000, count);
-        test1.set(2, 100000, 100000-count);
+
         rt_thread_mdelay(1000);
     }
 
