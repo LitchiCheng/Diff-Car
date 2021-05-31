@@ -28,48 +28,38 @@
 
 void speedThread(void* parameter)
 {
-    rt_int16_t count2;
-    bool first_in = true;
-    SlideWindow<rt_int16_t, 50> filter;
+    Pwm test("pwm4");
+    Pwm test1("pwm3");
+    int pwm = 10000;
+    test.set(1, 100000, pwm);
+    test.set(2, 100000, 100000-pwm);
+    test1.set(1, 100000, pwm);
+    test1.set(2, 100000, 100000-pwm);
+
+    rt_int16_t tmp;
+    getCounter(&tmp);
+    rt_int16_t count = 0;
+    count = tmp;
+    SlideWindow<rt_int16_t, 150> filter;
+
     while (1)
     {
-        rt_int16_t tmp;
         getCounter(&tmp);
-        rt_kprintf("%d \r\n", tmp);
-        if(first_in){
-            first_in = false;
-            count2 = tmp;
-        }
-        rt_int16_t cnt_per_s = (tmp - count2) * 1000 / 10;
+        rt_int16_t cnt_per_s = (tmp - count);
         filter.push(cnt_per_s);
-        //rt_kprintf("%d\r\n", filter.getFilterValue());
-        count2 = tmp;
-        rt_thread_mdelay(10);
+        rt_kprintf("%d %d %d\r\n", filter.getFilterValue(), tmp, count);
+        count = tmp;
+        rt_thread_mdelay(1);
     }
 }
 
 int main(void)
 {
     rt_thread_t speed_thread_ptr;
-    rt_err_t result;
-    /* 创建线程 2 */
-    /* 线程的入口是 thread2_entry, 参数是 RT_NULL
-     * 栈空间是 512，优先级是 250，时间片是 25 个 OS Tick
-     */
     speed_thread_ptr = rt_thread_create("speedThread",
-            speedThread, RT_NULL,
-                                1024, 10, 25);
-
-    /* 启动线程 */
+            speedThread, RT_NULL, 1024, 9, 25);
     if (speed_thread_ptr != RT_NULL) rt_thread_startup(speed_thread_ptr);
 
-    Pwm test("pwm4");
-    Pwm test1("pwm3");
-    int count = 30000;
-    test.set(1, 100000, count);
-    test.set(2, 100000, 100000-count);
-    test1.set(1, 100000, count);
-    test1.set(2, 100000, 100000-count);
     while (true)
     {
 
