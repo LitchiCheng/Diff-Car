@@ -153,7 +153,6 @@
 
 /* IoT - internet of things */
 
-#define PKG_USING_NANOPB
 
 /* Wi-Fi */
 
@@ -169,8 +168,6 @@
 /* IoT Cloud */
 
 /* end of IoT Cloud */
-#define PKG_USING_OTA_DOWNLOADER
-#define PKG_USING_OTA_DOWNLOADER_LATEST_VERSION
 /* end of IoT - internet of things */
 
 /* security packages */
@@ -187,23 +184,13 @@
 
 /* tools packages */
 
-#define PKG_USING_MICRO_XRCE_DDS_CLIENT
-
-/* Micro-XRCE-DDS-Client Options */
-
-#define MICRO_XRCE_DDS_CLIENT_USING_EXAMPLE
-/* end of Micro-XRCE-DDS-Client Options */
-#define PKG_USING_MICRO_XRCE_DDS_CLIENT_LATEST_VERSION
 /* end of tools packages */
 
 /* system packages */
 
-#define PKG_USING_FAL
-#define FAL_DEBUG_CONFIG
-#define FAL_DEBUG 1
-#define FAL_PART_HAS_TABLE_CFG
-#define PKG_USING_FAL_V00500
-#define PKG_FAL_VER_NUM 0x00500
+/* acceleration: Assembly language or algorithmic acceleration packages */
+
+/* end of acceleration: Assembly language or algorithmic acceleration packages */
 
 /* Micrium: Micrium software products porting for RT-Thread */
 
@@ -212,22 +199,6 @@
 
 /* peripheral libraries and drivers */
 
-#define PKG_USING_ROSSERIAL
-#define ROSSERIAL_USE_SERIAL
-#define ROSSERIAL_UART_NAME "uart2"
-
-/* roserial examples */
-
-
-/* You may only choose one example at a time */
-
-/* end of roserial examples */
-#define PKG_USING_ROSSERIAL_MLATEST_VERSION
-#define PKG_ROSSERIAL_VER_NUM 0x29999
-#define PKG_USING_SSD1306
-#define PKG_USING_SSD1306_I2C_ADDRESS 0x3C
-#define PKG_USING_SSD1306_I2C_BUS_NAME "i2c1"
-#define PKG_USING_SSD1306_LATEST_VERSION
 /* end of peripheral libraries and drivers */
 
 /* AI packages */
@@ -236,8 +207,6 @@
 
 /* miscellaneous packages */
 
-#define PKG_USING_DIGITALCTRL
-#define PKG_USING_DIGITALCTRL_LATEST_VERSION
 
 /* samples: kernel and components samples */
 

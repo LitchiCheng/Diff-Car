@@ -22,5 +22,6 @@ static int sss(int argc, char *argv[])
     LOG_I("count is %d\r\n", count);
     return ret;
 }
+
 /* 导出到 msh 命令列表中 */
 MSH_CMD_EXPORT(sss, pulse encoder sample);
