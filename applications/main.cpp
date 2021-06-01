@@ -32,7 +32,7 @@ void speedThread(void* parameter)
 {
     Pwm test("pwm4");
     Pwm test1("pwm3");
-    int pwm = 10000;
+    int pwm = 5000;
     test.set(1, 100000, pwm);
     test.set(2, 100000, 100000-pwm);
     test1.set(1, 100000, pwm);
@@ -56,10 +56,10 @@ void speedThread(void* parameter)
 
         double rps = diff / (50*diff_t);
         filter.push(rps);
-        rt_kprintf("%f %d %d\r\n", filter.getFilterValue(), diff, diff_t);
+        rt_kprintf("%f|%f|%f\r\n", filter.getFilterValue(), (double)diff, (double)diff_t);
         count = tmp;
         last_t = tmp_t;
-        //rt_thread_mdelay(10);
+        rt_thread_mdelay(10);
     }
 }
 
@@ -72,7 +72,6 @@ int main(void)
 
     while (true)
     {
-
         rt_thread_mdelay(1000);
     }
 
