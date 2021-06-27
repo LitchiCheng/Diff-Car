@@ -28,38 +28,56 @@
 #include "SEGGER_RTT.h"
 #include <stdlib.h>
 
+#include "pid.h"
+#include <math.h>
+
 void speedThread(void* parameter)
 {
     Pwm test("pwm4");
     Pwm test1("pwm3");
-    int pwm = 5000;
+    int pwm = 20000;
     test.set(1, 100000, pwm);
     test.set(2, 100000, 100000-pwm);
-    test1.set(1, 100000, pwm);
-    test1.set(2, 100000, 100000-pwm);
+//    test1.set(1, 100000, pwm);
+//    test1.set(2, 100000, 100000-pwm);
 
     rt_int16_t tmp;
     getCounter(&tmp);
     rt_int16_t count = 0;
     count = tmp;
-    SlideWindow<double, 50> filter;
+    SlideWindow<double, 150> filter;
 
     rt_tick_t tmp_t = rt_tick_get();
     rt_tick_t last_t = tmp_t;
+
+    Pid<rt_int32_t> pp(-40,20,1,5,100000,-100000);
     while (1)
     {
+        /*calc speed*/
         getCounter(&tmp);
         rt_int16_t diff = (tmp - count);
-        diff = abs(diff);
         tmp_t = rt_tick_get();
         rt_tick_t diff_t = tmp_t - last_t;
-
-        double rps = diff / (50*diff_t);
+        double rps = ((double)diff / ((double)diff_t * 50));
+        double rpm = rps * 60.0;
         filter.push(rps);
-        rt_kprintf("%f|%f|%f\r\n", filter.getFilterValue(), (double)diff, (double)diff_t);
+        rt_kprintf("%f|%d|%d\r\n", filter.getFilterValue(), diff, diff_t);
         count = tmp;
         last_t = tmp_t;
-        rt_thread_mdelay(10);
+        /****************/
+//        rt_int32_t now = ceil(filter.getFilterValue());
+//        rt_int32_t p = pp.calc(now);
+//        if(p > 0){
+//            test.set(1, 100000, p);
+//            test.set(2, 100000, 100000-p);
+//        }else{
+//            test.set(2, 100000, -p);
+//            test.set(1, 100000, 100000+p);
+//        }
+        /********************/
+        double p = 0;
+        //rt_kprintf("%f|%f|%f|%f\r\n", (double)filter.getFilterValue(), (double)diff, (double)diff_t, (double)p);
+        rt_thread_mdelay(1);
     }
 }
 
@@ -67,7 +85,7 @@ int main(void)
 {
     rt_thread_t speed_thread_ptr;
     speed_thread_ptr = rt_thread_create("speedThread",
-            speedThread, RT_NULL, 4096, 9, 25);
+            speedThread, RT_NULL, 8192, 9, 25);
     if (speed_thread_ptr != RT_NULL) rt_thread_startup(speed_thread_ptr);
 
     while (true)

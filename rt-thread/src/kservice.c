@@ -1393,7 +1393,7 @@ void rt_kprintf(const char *fmt, ...)
 {
     va_list args;
     rt_size_t length;
-    static char rt_log_buf[RT_CONSOLEBUF_SIZE];
+    static char rt_log_buf[1024];
 
     va_start(args, fmt);
     /* the return value of vsnprintf is the number of bytes that would be
