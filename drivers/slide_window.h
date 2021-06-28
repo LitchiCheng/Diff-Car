@@ -46,6 +46,7 @@ public:
 		    return (T)(tmp / MEM_LEN_);
 		}
 	}
+	bool isValid(){return is_full;}
 private:
     const uint16_t MEM_LEN_;
     T* const static_array_;
