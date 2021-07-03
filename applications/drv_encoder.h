@@ -9,8 +9,7 @@ extern "C"
 {
 #endif
 
-void clearCounter(void);
-void getCounter(rt_int16_t *speed);
+rt_int16_t getCounter(rt_int16_t cnt);
 
 #ifdef __cplusplus
 }

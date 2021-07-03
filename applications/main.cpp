@@ -33,74 +33,72 @@
 
 #include "button.h"
 
+#include "calc_speed.h"
+
 void speedThread(void* parameter)
 {
-    Pwm test("pwm4" ,100000, 1 ,2);
-    Pwm test1("pwm3" ,100000, 1 ,2);
 
-    rt_int16_t tmp;
-    getCounter(&tmp);
-    rt_int16_t count = 0;
-    count = tmp;
-    SlideWindow<double, 200> filter;
-
-    rt_tick_t tmp_t = rt_tick_get();
-    rt_tick_t last_t = tmp_t;
 
     uint8_t cnt = 0;
 
     Button key2(GET_PIN(E, 0), false, PIN_MODE_INPUT_PULLUP, 30);
     Button key3(GET_PIN(D, 6), false, PIN_MODE_INPUT_PULLUP, 30);
 
-    double ref = 0;
-    Pid<double> pp(ref,500,2,0,100000,-100000);
-    bool trigger = true;
-    bool trigger1 = true;
+    CalcSpeed<double, 200> left("htm2", 50000);
+    left.setInverse(true);
+    CalcSpeed<double, 200> right("htm1", 50000);
+
+    double refl = 0;
+    double refr = 0;
+    Pid<double> pleft(refl, 500, 2, 1, 100000, -100000);
+    Pid<double> pright(refr, 500, 2, 1, 100000, -100000);
+
+    Pwm right_pwm("pwm4" ,100000, 1 ,2);
+    Pwm left_pwm("pwm3" ,100000, 1 ,2);
+    //left_pwm.setInverse(true);
+
     while (1)
     {
         /*add speed*/
         if(key2.isTrigger()){
-            ref += 50;
-            pp.setRef(ref);
+            refl += 50;
+            pleft.setRef(refl);
+            refr += 50;
+            pright.setRef(refr);
         }
         /*minus speed*/
         if(key3.isTrigger()){
-            ref -= 50;
-            pp.setRef(ref);
+            refl -= 50;
+            pleft.setRef(refl);
+            refr -= 50;
+            pright.setRef(refr);
+
         }
-        /*calc speed*/
-        getCounter(&tmp);
-        rt_int16_t diff = (tmp - count);
-        tmp_t = rt_tick_get();
-        rt_tick_t diff_t = tmp_t - last_t;
-        diff_t = diff_t == 0 ? 1 : diff_t;
-        double rps = ((double)diff / ((double)diff_t * 50));
-        double rpm = rps * 60.0;
-        filter.push(rpm);
-        count = tmp;
-        last_t = tmp_t;
         /****************/
-        double now = filter.getFilterValue();
-        double err = now - pp.getRef();
-        if(filter.isValid()){
-            double p = pp.calc(now);
+        if(left.isValid()){
+            double p = pleft.calc(left.calc());
             if(p > 0){
-                test.setCW(p);
-                test1.setCW(p);
+                left_pwm.setCW(p);
             }else if(p < 0){
-                test.setCCW(-p);
-                test1.setCCW(-p);
+                left_pwm.setCCW(-p);
             }else{
-                test.setCW(0);
-                test1.setCW(0);
+                left_pwm.setCW(0);
             }
-        }else{
-           //if()
+        }
+        if(right.isValid()){
+            double p = pright.calc(right.calc());
+            if(p > 0){
+                right_pwm.setCW(p);
+            }else if(p < 0){
+                right_pwm.setCCW(-p);
+            }else{
+                right_pwm.setCW(0);
+            }
         }
         /********************/
         if(cnt++ >= 10){
             cnt = 0;
-            rt_kprintf("%f|%f|%d\r\n", filter.getFilterValue(), err, diff_t);
+            rt_kprintf("%f|%f|%d\r\n", left.calc(), right.calc(), 0);
         }
         rt_thread_mdelay(1);
     }

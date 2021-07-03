@@ -59,6 +59,10 @@
 
 /* USER CODE END 0 */
 
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+                                        /**
+  * Initializes the Global MSP.
+  */
 void HAL_MspInit(void)
 {
   /* USER CODE BEGIN MspInit 0 */

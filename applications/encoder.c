@@ -18,7 +18,7 @@ static int sss(int argc, char *argv[])
 {
     rt_err_t ret = RT_EOK;
     rt_int16_t count;
-    getCounter(&count);
+    //getCounter2(&count);
     LOG_I("count is %d\r\n", count);
     return ret;
 }

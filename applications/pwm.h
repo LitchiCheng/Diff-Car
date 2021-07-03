@@ -32,6 +32,7 @@ public:
         memcpy(_pwm_dev_name, name, strlen(name));
         rt_kprintf("pwm_dev_name is %s\n", _pwm_dev_name);
     }
+    void setInverse(bool inverse){_inverse = inverse;}
     void init(){
         /* 查找设备 */
         _pwm_dev = (struct rt_device_pwm *)rt_device_find(_pwm_dev_name);
@@ -47,13 +48,25 @@ public:
     }
     void setCW(rt_uint32_t pulse){
         /* 设置PWM周期和脉冲宽度默认值 */
-        rt_pwm_set(_pwm_dev, _channel_cw, _period, pulse);
-        rt_pwm_set(_pwm_dev, _channel_ccw, _period, 0);
+        if(!_inverse){
+            rt_pwm_set(_pwm_dev, _channel_cw, _period, pulse);
+            rt_pwm_set(_pwm_dev, _channel_ccw, _period, 0);
+        }else{
+            rt_pwm_set(_pwm_dev, _channel_ccw, _period, pulse);
+            rt_pwm_set(_pwm_dev, _channel_cw, _period, 0);
+        }
+
     }
     void setCCW(rt_uint32_t pulse){
         /* 设置PWM周期和脉冲宽度默认值 *//* PWM脉冲宽度值，单位为纳秒ns */
-        rt_pwm_set(_pwm_dev, _channel_ccw, _period, pulse);
-        rt_pwm_set(_pwm_dev, _channel_cw, _period, 0);
+        if(!_inverse){
+            rt_pwm_set(_pwm_dev, _channel_ccw, _period, pulse);
+            rt_pwm_set(_pwm_dev, _channel_cw, _period, 0);
+        }else{
+            rt_pwm_set(_pwm_dev, _channel_cw, _period, pulse);
+            rt_pwm_set(_pwm_dev, _channel_ccw, _period, 0);
+        }
+
     }
 private:
     int8_t _last_channel{1};
@@ -62,6 +75,7 @@ private:
     rt_uint32_t _period{0};                /* 周期，单位为纳秒ns */
     rt_uint8_t _channel_cw{0};
     rt_uint8_t _channel_ccw{0};
+    bool _inverse{false};
 };
 
 #endif /* APPLICATIONS_PWM_H_ */
