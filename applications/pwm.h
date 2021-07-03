@@ -20,7 +20,9 @@ class Pwm
 {
 public:
     Pwm(){}
-    Pwm(const char* name){
+    Pwm(const char* name, rt_uint32_t period, rt_uint8_t channel_cw, rt_uint8_t channel_ccw):
+        _period(period), _channel_cw(channel_cw),_channel_ccw(channel_ccw)
+    {
         memset(_pwm_dev_name, 0x00, 6);
         setPwmName(name);
         init();
@@ -43,19 +45,23 @@ public:
         rt_pwm_enable(_pwm_dev, 2);
         rt_pwm_enable(_pwm_dev, 3);
     }
-    void set(rt_uint8_t channel, rt_uint32_t period, rt_uint32_t pulse){
+    void setCW(rt_uint32_t pulse){
         /* 设置PWM周期和脉冲宽度默认值 */
-        rt_pwm_set(_pwm_dev, channel, period, pulse);
-        _last_channel = channel;
-        _last_period = period;
-        _last_pulse = pulse;
+        rt_pwm_set(_pwm_dev, _channel_cw, _period, pulse);
+        rt_pwm_set(_pwm_dev, _channel_ccw, _period, 0);
+    }
+    void setCCW(rt_uint32_t pulse){
+        /* 设置PWM周期和脉冲宽度默认值 *//* PWM脉冲宽度值，单位为纳秒ns */
+        rt_pwm_set(_pwm_dev, _channel_ccw, _period, pulse);
+        rt_pwm_set(_pwm_dev, _channel_cw, _period, 0);
     }
 private:
     int8_t _last_channel{1};
     char _pwm_dev_name[6];
     struct rt_device_pwm *_pwm_dev{RT_NULL};      /* PWM设备句柄 */
-    rt_uint32_t _last_period{0};                /* 周期，单位为纳秒ns */
-    rt_uint32_t _last_pulse{0};             /* PWM脉冲宽度值，单位为纳秒ns */
+    rt_uint32_t _period{0};                /* 周期，单位为纳秒ns */
+    rt_uint8_t _channel_cw{0};
+    rt_uint8_t _channel_ccw{0};
 };
 
 #endif /* APPLICATIONS_PWM_H_ */
