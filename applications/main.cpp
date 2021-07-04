@@ -98,7 +98,7 @@ void speedThread(void* parameter)
         /********************/
         if(cnt++ >= 10){
             cnt = 0;
-            rt_kprintf("%f|%f|%d\r\n", left.calc(), right.calc(), 0);
+            //rt_kprintf("%f|%f|%d\r\n", left.calc(), right.calc(), 0);
         }
         rt_thread_mdelay(1);
     }

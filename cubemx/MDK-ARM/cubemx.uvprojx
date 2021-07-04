@@ -337,7 +337,7 @@
               <MiscControls/>
               <Define>USE_HAL_DRIVER,STM32F103xE,USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine/>
-              <IncludePath>../Drivers/STM32F1xx_HAL_Driver/Inc;                ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;                ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;                ../Drivers/CMSIS/Include;               ../Inc</IncludePath>
+              <IncludePath>../Drivers/STM32F1xx_HAL_Driver/Inc;                 ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;                 ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;                 ../Drivers/CMSIS/Include;                ../Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
