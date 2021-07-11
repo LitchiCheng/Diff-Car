@@ -339,6 +339,81 @@ __exit:
 }
 
 /**
+ * Send commands to AT server and wait response.
+ *
+ * @param client current AT client object
+ * @param resp AT response object, using RT_NULL when you don't care response
+ * @param cmd_expr AT commands expression
+ *
+ * @return 0 : success
+ *        -1 : response status error
+ *        -2 : wait timeout
+ *        -7 : enter AT CLI mode
+ */
+int at_obj_recv_parse(at_client_t client, at_response_t resp)
+{
+    va_list args;
+    rt_size_t cmd_size = 0;
+    rt_err_t result = RT_EOK;
+    const char *cmd = RT_NULL;
+
+//    RT_ASSERT(cmd_expr);
+
+    if (client == RT_NULL)
+    {
+        LOG_E("input AT Client object is NULL, please create or get AT Client object!");
+        return -RT_ERROR;
+    }
+
+    /* check AT CLI mode */
+    if (client->status == AT_STATUS_CLI && resp)
+    {
+        return -RT_EBUSY;
+    }
+
+    rt_mutex_take(client->lock, RT_WAITING_FOREVER);
+
+    client->resp_status = AT_RESP_OK;
+    client->resp = resp;
+
+    if (resp != RT_NULL)
+    {
+        resp->buf_len = 0;
+        resp->line_counts = 0;
+    }
+
+//    va_start(args, cmd_expr);
+//    at_vprintfln(client->device, cmd_expr, args);
+//    va_end(args);
+
+    if (resp != RT_NULL)
+    {
+        if (rt_sem_take(client->resp_notice, resp->timeout) != RT_EOK)
+        {
+            cmd = at_get_last_cmd(&cmd_size);
+            LOG_E("execute command (%.*s) timeout (%d ticks)!", cmd_size, cmd, resp->timeout);
+            client->resp_status = AT_RESP_TIMEOUT;
+            result = -RT_ETIMEOUT;
+            goto __exit;
+        }
+        if (client->resp_status != AT_RESP_OK)
+        {
+            cmd = at_get_last_cmd(&cmd_size);
+            LOG_E("execute command (%.*s) failed!", cmd_size, cmd);
+            result = -RT_ERROR;
+            goto __exit;
+        }
+    }
+
+__exit:
+    client->resp = RT_NULL;
+
+    rt_mutex_release(client->lock);
+
+    return result;
+}
+
+/**
  * Waiting for connection to external devices.
  *
  * @param client current AT client object
@@ -441,6 +516,7 @@ static rt_err_t at_client_getchar(at_client_t client, char *ch, rt_int32_t timeo
         result = rt_sem_take(client->rx_notice, rt_tick_from_millisecond(timeout));
         if (result != RT_EOK)
         {
+            rt_kprintf("result is %d\r\n", result);
             return result;
         }
     }

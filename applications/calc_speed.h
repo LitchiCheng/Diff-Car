@@ -42,7 +42,7 @@ public:
         rt_tick_t diff_t = now_time - _last_time;
         diff_t = diff_t == 0 ? 1 : diff_t;
         double tt = diff_t / RT_TICK_PER_SECOND;
-        printf("..............  %d \r\n", diff_cnt);
+//        printf("..............  %d \r\n", diff_cnt);
         tt = tt == 0 ? 1 : tt;
         T rpm = (diff_cnt * 60.0 * 1000.0 / _cpr) / diff_t;
         _filter.push(rpm);

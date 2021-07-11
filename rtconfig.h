@@ -114,22 +114,11 @@
 
 /* Socket abstraction layer */
 
-#define RT_USING_SAL
-
-/* protocol stack implement */
-
-#define SAL_USING_AT
-/* end of protocol stack implement */
-#define SAL_SOCKETS_NUM 16
 /* end of Socket abstraction layer */
 
 /* Network interface device */
 
 #define RT_USING_NETDEV
-#define NETDEV_USING_IFCONFIG
-#define NETDEV_USING_PING
-#define NETDEV_USING_NETSTAT
-#define NETDEV_USING_AUTO_DEFAULT
 #define NETDEV_IPV4 1
 #define NETDEV_IPV6 0
 /* end of Network interface device */
@@ -143,7 +132,6 @@
 #define RT_USING_AT
 #define AT_USING_CLIENT
 #define AT_CLIENT_NUM_MAX 1
-#define AT_USING_SOCKET
 #define AT_USING_CLI
 #define AT_CMD_MAX_LEN 128
 #define AT_SW_VERSION_NUM 0x10300
@@ -156,6 +144,20 @@
 
 /* Utilities */
 
+#define RT_USING_ULOG
+#define ULOG_OUTPUT_LVL_D
+#define ULOG_OUTPUT_LVL 7
+#define ULOG_ASSERT_ENABLE
+#define ULOG_LINE_BUF_SIZE 128
+
+/* log format */
+
+#define ULOG_USING_COLOR
+#define ULOG_OUTPUT_TIME
+#define ULOG_OUTPUT_LEVEL
+#define ULOG_OUTPUT_TAG
+/* end of log format */
+#define ULOG_BACKEND_USING_CONSOLE
 /* end of Utilities */
 /* end of RT-Thread Components */
 
@@ -174,16 +176,6 @@
 
 /* end of Wiced WiFi */
 /* end of Wi-Fi */
-#define PKG_USING_AT_DEVICE
-#define AT_DEVICE_USING_ESP8266
-#define AT_DEVICE_ESP8266_INIT_ASYN
-#define AT_DEVICE_ESP8266_SAMPLE
-#define ESP8266_SAMPLE_WIFI_SSID "Redmi_DD77"
-#define ESP8266_SAMPLE_WIFI_PASSWORD "alice520"
-#define ESP8266_SAMPLE_CLIENT_NAME "uart2"
-#define ESP8266_SAMPLE_RECV_BUFF_LEN 512
-#define PKG_USING_AT_DEVICE_V203
-#define PKG_AT_DEVICE_VER_NUM 0x20003
 
 /* IoT Cloud */
 

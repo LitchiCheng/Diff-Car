@@ -227,6 +227,7 @@ int at_obj_set_urc_table(at_client_t client, const struct at_urc * table, rt_siz
 
 /* AT client send commands to AT server and waiter response */
 int at_obj_exec_cmd(at_client_t client, at_response_t resp, const char *cmd_expr, ...);
+int at_obj_recv_parse(at_client_t client, at_response_t resp);
 
 /* AT response object create and delete */
 at_response_t at_create_resp(rt_size_t buf_size, rt_size_t line_num, rt_int32_t timeout);
