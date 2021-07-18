@@ -1,1 +1,7 @@
-[]
+[
+ {
+  "path": "/packages/peripherals/u8g2", 
+  "ver": "cpp-latest", 
+  "name": "U8G2"
+ }
+]

@@ -83,6 +83,12 @@
 
 /* Device virtual file system */
 
+#define RT_USING_DFS
+#define DFS_USING_WORKDIR
+#define DFS_FILESYSTEMS_MAX 2
+#define DFS_FILESYSTEM_TYPES_MAX 2
+#define DFS_FD_MAX 16
+#define RT_USING_DFS_DEVFS
 /* end of Device virtual file system */
 
 /* Device Drivers */
@@ -95,7 +101,6 @@
 #define RT_USING_SERIAL
 #define RT_SERIAL_USING_DMA
 #define RT_SERIAL_RB_BUFSZ 64
-#define RT_USING_HWTIMER
 #define RT_USING_PIN
 #define RT_USING_PWM
 #define RT_USING_PULSE_ENCODER
@@ -108,6 +113,9 @@
 /* POSIX layer and C standard library */
 
 #define RT_USING_LIBC
+#define RT_USING_PTHREADS
+#define PTHREAD_NUM_MAX 8
+#define RT_USING_POSIX
 /* end of POSIX layer and C standard library */
 
 /* Network */
@@ -211,6 +219,41 @@
 
 /* peripheral libraries and drivers */
 
+#define PKG_USING_U8G2
+
+/* U8G2 Examples */
+
+#define U8G2_USING_SW_I2C_SSD1306
+
+/* full buffer examples    (fast, large RAM consumption) */
+
+#define U8G2_USING_FRAME_EXAMPLE_UPDATE_AREA
+/* end of full buffer examples    (fast, large RAM consumption) */
+
+/* page buffer examples    (slow, small RAM consumption) */
+
+#define U8G2_USING_PAGE_EXAMPLE_CLOCK
+#define U8G2_USING_PAGE_EXAMPLE_DRAW_LOG
+#define U8G2_USING_PAGE_EXAMPLE_SCROLLING_TEXT
+#define U8G2_USING_PAGE_EXAMPLE_TERMINAL
+#define U8G2_USING_PAGE_EXAMPLE_WEATHER
+/* end of page buffer examples    (slow, small RAM consumption) */
+
+/* u8x8 text only examples (fonts with fixed size)       */
+
+/* end of u8x8 text only examples (fonts with fixed size)       */
+
+/* game examples */
+
+/* end of game examples */
+/* end of U8G2 Examples */
+#define PKG_USING_U8G2_CPP_LATEST_VERSION
+
+/* C   version: v1.x.x */
+
+/* C++ version: v2.x.x */
+
+#define PKG_U8G2_VER_NUM 0x29999
 /* end of peripheral libraries and drivers */
 
 /* AI packages */

@@ -78,7 +78,7 @@ static void MX_USART2_UART_Init(void);
   * @brief  The application entry point.
   * @retval int
   */
-__WEAK __WEAK int main(void)
+__WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK __WEAK int main(void)
 {
   /* USER CODE BEGIN 1 */
 

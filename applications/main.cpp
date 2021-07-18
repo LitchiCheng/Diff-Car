@@ -46,14 +46,14 @@ void speedThread(void* parameter)
     Button key2(GET_PIN(E, 0), false, PIN_MODE_INPUT_PULLUP, 30);
     Button key3(GET_PIN(D, 6), false, PIN_MODE_INPUT_PULLUP, 30);
 
-    CalcSpeed<double, 200> left("htm2", 50000);
-    left.setInverse(true);
-    CalcSpeed<double, 200> right("htm1", 50000);
+    CalcSpeed<double, 50> left("htm2", 50000);
+    //left.setInverse(true);
+    CalcSpeed<double, 50> right("htm1", 50000);
 
     double refl = 0;
     double refr = 0;
-    Pid<double> pleft(refl, 500, 2, 1, 100000, -100000);
-    Pid<double> pright(refr, 500, 2, 1, 100000, -100000);
+    Pid<double> pleft(refl, 800, 2, 1, 100000, -100000);
+    Pid<double> pright(refr, 800, 2, 1, 100000, -100000);
 
     Pwm right_pwm("pwm4" ,100000, 1 ,2);
     Pwm left_pwm("pwm3" ,100000, 1 ,2);
@@ -61,34 +61,24 @@ void speedThread(void* parameter)
 
     while (1)
     {
-        /*add speed*/
-//        if(key2.isTrigger())
-//        {
-//            refl += 50;
-//            pleft.setRef(refl);
-//            refr += 50;
-//            pright.setRef(refr);
-//        }
-//        /*minus speed*/
-//        if(key3.isTrigger())
-//        {
-//            refl -= 50;
-//            pleft.setRef(refl);
-//            refr -= 50;
-//            pright.setRef(refr);
-//        }
-        static double speed[2];
-        if(rt_mq_recv(&mq, &speed, 2*sizeof(double), 0) == RT_EOK){
-            pleft.setRef(speed[0]*50);
-            pright.setRef(speed[1]*50);
-
-        }else{
-            pleft.setRef(speed[0]*50);
-            pright.setRef(speed[1]*50);
+         static double speed[2] = {0.0, 0.0};
+        rt_mq_recv(&mq, &speed, 2*sizeof(double), 0);
+        if(abs(speed[0]) > 0 && abs(speed[1]) == 0){
+            pleft.setRef(speed[0]*100);
+            pright.setRef(speed[0]*100);
+        }else if(abs(speed[1]) > 0 && abs(speed[0]) == 0){
+            pleft.setRef(-speed[1]*100);
+            pright.setRef(speed[1]*100);
+        }else if(abs(speed[1]) == 0 && abs(speed[0]) == 0){
+            pleft.setRef(0);
+            pright.setRef(0);
         }
 
+
         /****************/
-        if(left.isValid())
+//        left_pwm.setCW(50000);
+//        right_pwm.setCW(50000);
+        //if(left.isValid())
         {
             double p = pleft.calc(left.calc());
             if(p > 0){
@@ -99,7 +89,7 @@ void speedThread(void* parameter)
                 left_pwm.setCW(0);
             }
         }
-        if(right.isValid())
+        //if(right.isValid())
         {
             double p = pright.calc(right.calc());
             if(p > 0){
@@ -113,7 +103,7 @@ void speedThread(void* parameter)
         /********************/
         if(cnt++ >= 100){
             cnt = 0;
-            //rt_kprintf("%f|%f|%d\r\n", left.calc(), right.calc(), 0);
+            //rt_kprintf("%f|%f|%f|%f\r\n", left.calc(), right.calc(), speed[0], speed[1]);
         }
         rt_thread_mdelay(1);
     }

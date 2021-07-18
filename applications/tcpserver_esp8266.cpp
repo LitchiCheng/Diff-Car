@@ -16,17 +16,44 @@
 #define LOG_TAG              "tcpserver"
 #include <at_log.h>
 
+#include <rthw.h>
+#include <U8g2lib.h>
+
+// You may reference Drivers/drv_gpio.c for pinout
+// In u8x8.h #define U8X8_USE_PINS
+#define OLED_I2C_PIN_SCL                    66  // PE2
+#define OLED_I2C_PIN_SDA                    67  // P23
+
+// Check https://github.com/olikraus/u8g2/wiki/u8g2setupcpp for all supported devices
+static U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0,\
+                                         /* clock=*/ OLED_I2C_PIN_SCL,\
+                                         /* data=*/ OLED_I2C_PIN_SDA,\
+                                         /* reset=*/ U8X8_PIN_NONE);
+                                         // All Boards without Reset of the Display
+
+static void oledPrint(int roll, char *str)
+{
+    u8g2.begin();
+    u8g2.clearBuffer();                         // clear the internal memory
+    u8g2.setFont(u8g2_font_6x13_tr);            // choose a suitable font
+    u8g2.drawStr(roll, 18, str);   // write something to the internal memory
+    u8g2.sendBuffer();                          // transfer internal memory to the display
+    u8g2.setFont(u8g2_font_unifont_t_symbols);
+    u8g2.drawGlyph(112, 56, 0x2603 );
+    u8g2.sendBuffer();
+}
+
 /* 消息队列控制块 */
 struct rt_messagequeue mq;
 /* 消息队列中用到的放置消息的内存池 */
-static rt_uint8_t msg_pool[2*sizeof(double)];
+static rt_uint8_t msg_pool[2*2*sizeof(double)];
 
 
 static void recvCb(const char *data, rt_size_t size)
 {
-    char* buff = rt_malloc(size);
+    char* buff = (char*)rt_malloc(size);
     memcpy(buff, data, size);
-    rt_kprintf("%s %d\r\n", buff, size);
+//    rt_kprintf("%s %d\r\n", buff, size);
     /* 发送紧急消息到消息队列中 */
     if(size < 2*sizeof(double)){
         rt_free(buff);
@@ -35,7 +62,7 @@ static void recvCb(const char *data, rt_size_t size)
 
     double vx = *(double*)(buff);
     double vw = *(double*)(buff+sizeof(double));
-    rt_kprintf("vx %f vw %f\r\n", vx, vw);
+//    rt_kprintf("vx %f vw %f\r\n", vx, vw);
     int result = rt_mq_urgent(&mq, buff, 2*sizeof(double));
     if (result != RT_EOK)
     {
@@ -101,6 +128,7 @@ static const struct at_urc urc_table[] =
 /* AT+CIFSR            Query local IP address and MAC */
 int test(int argc,char**argv)
 {
+    oledPrint(1, "start establish tcp connection.");
     at_response_t resp = RT_NULL;
     int result =0;
 
@@ -122,6 +150,7 @@ int test(int argc,char**argv)
     result = at_exec_cmd(resp,"AT+CIPMUX=1");
     result = at_exec_cmd(resp,"AT+CIPSERVER=1,8000");
 
+    rt_thread_mdelay(2000);
     /* AT  Client 发送查询 IP 地址命令并接收 AT Server 响应 */
     /* 响应数据及信息存放在 resp 结构体中 */
     result = at_exec_cmd(resp,"AT+CIFSR");
@@ -157,7 +186,9 @@ int test(int argc,char**argv)
         /* 解析响应数据中第一行数据，得到对应 IP 地址 */
         if(at_resp_parse_line_args(resp,2, resp_expr, resp_arg)==1)
         {
+
             LOG_I("Station IP  : %s", resp_arg);
+            oledPrint(1, resp_arg);
             memset(resp_arg,0x00, AT_CMD_MAX_LEN);
         }
         else
@@ -169,6 +200,7 @@ int test(int argc,char**argv)
         if(at_resp_parse_line_args(resp,3, resp_expr, resp_arg)==1)
         {
             LOG_I("Station MAC : %s", resp_arg);
+            //oledPrint(50, resp_arg);
         }
         else
         {
