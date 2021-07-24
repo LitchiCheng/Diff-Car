@@ -19,7 +19,7 @@ static int sss(int argc, char *argv[])
     rt_err_t ret = RT_EOK;
     rt_int16_t count = getCounter(1);
 //    getCounter1(&count);
-    LOG_I("count is %d %d\r\n", getCounter(1),getCounter(2));
+    LOG_I("count is %d %d\r\n", getOriginalCounter(4),getOriginalCounter(2));
     return ret;
 }
 

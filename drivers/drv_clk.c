@@ -79,11 +79,11 @@ void system_clock_config(int target_freq_Mhz)
 
 int clock_information(void)
 {
-    LOG_D("System Clock information");
-    LOG_D("SYSCLK_Frequency = %d", HAL_RCC_GetSysClockFreq());
-    LOG_D("HCLK_Frequency   = %d", HAL_RCC_GetHCLKFreq());
-    LOG_D("PCLK1_Frequency  = %d", HAL_RCC_GetPCLK1Freq());
-    LOG_D("PCLK2_Frequency  = %d", HAL_RCC_GetPCLK2Freq());
+    LOG_I("System Clock information");
+    LOG_I("SYSCLK_Frequency = %d", HAL_RCC_GetSysClockFreq());
+    LOG_I("HCLK_Frequency   = %d", HAL_RCC_GetHCLKFreq());
+    LOG_I("PCLK1_Frequency  = %d", HAL_RCC_GetPCLK1Freq());
+    LOG_I("PCLK2_Frequency  = %d", HAL_RCC_GetPCLK2Freq());
 
     return RT_EOK;
 }
@@ -95,6 +95,7 @@ void clk_init(char *clk_source, int source_freq, int target_freq)
      * Use SystemClock_Config generated from STM32CubeMX for clock init
      * system_clock_config(target_freq);
      */
+    rt_kprintf("ssssss\r\n");
     extern void SystemClock_Config(void);
     SystemClock_Config();
 }
